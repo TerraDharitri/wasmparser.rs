@@ -29,6 +29,7 @@ pub use self::data_section::Data;
 pub use self::data_section::DataKind;
 pub use self::data_section::DataSectionReader;
 pub use self::element_section::Element;
+pub use self::element_section::ElementItem;
 pub use self::element_section::ElementItems;
 pub use self::element_section::ElementItemsReader;
 pub use self::element_section::ElementKind;
@@ -55,15 +56,13 @@ pub use self::section_reader::SectionIteratorLimited;
 pub use self::section_reader::SectionReader;
 pub use self::section_reader::SectionWithLimitedItems;
 
-pub use self::name_section::FunctionName;
-pub use self::name_section::LocalName;
-pub use self::name_section::ModuleName;
 pub use self::name_section::Name;
 pub use self::name_section::NameSectionReader;
 pub use self::name_section::NamingReader;
 
 pub use self::producers_section::ProducersField;
 pub use self::producers_section::ProducersFieldValue;
+pub use self::producers_section::ProducersFieldValuesReader;
 pub use self::producers_section::ProducersSectionReader;
 
 pub use self::linking_section::LinkingSectionReader;
