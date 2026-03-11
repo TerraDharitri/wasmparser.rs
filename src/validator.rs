@@ -547,9 +547,7 @@ impl<'a> ValidatingParser<'a> {
                     let table = match self.resources.tables.get(table_index as usize) {
                         Some(t) => t,
                         None => {
-                            self.set_validation_error(
-                                "unknown table: element section table index out of bounds",
-                            );
+                            self.set_validation_error(format!("unknown table {}", table_index));
                             return;
                         }
                     };
