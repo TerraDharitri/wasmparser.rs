@@ -573,9 +573,7 @@ impl<'a> ValidatingParser<'a> {
                 for item in &**indices {
                     if let ElementItem::Func(func_index) = item {
                         if *func_index as usize >= self.resources.func_type_indices.len() {
-                            self.set_validation_error(
-                                "unknown function: element func index out of bounds",
-                            );
+                            self.set_validation_error(format!("unknown function {}", func_index));
                             break;
                         }
                     }
@@ -629,9 +627,7 @@ impl<'a> ValidatingParser<'a> {
             }
             ParserState::BeginActiveDataSectionEntry(memory_index) => {
                 if memory_index as usize >= self.resources.memories.len() {
-                    self.set_validation_error(
-                        "unknown memory: data section memory index out of bounds",
-                    );
+                    self.set_validation_error(format!("unknown memory {}", memory_index));
                 } else {
                     self.init_expression_state = Some(InitExpressionState {
                         ty: Type::I32,
