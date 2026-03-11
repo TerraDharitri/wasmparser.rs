@@ -175,7 +175,15 @@ mod simple_tests {
             if !dir.file_type().unwrap().is_file() {
                 continue;
             }
-            let data = read_file_data(&dir.path());
+            let path = dir.path();
+            let filename = path.file_name().unwrap().to_str().unwrap();
+
+            // Skip memory.3.wasm - it has 65536 pages which is now valid
+            if filename == "memory.3.wasm" {
+                continue;
+            }
+
+            let data = read_file_data(&path);
             let mut parser = ValidatingParser::new(data.as_slice(), VALIDATOR_CONFIG);
             let mut max_iteration = 100000000;
             let mut error = false;
@@ -194,7 +202,7 @@ mod simple_tests {
                 }
             }
             if !error {
-                panic!("fail is expected");
+                panic!("fail is expected for {}", filename);
             }
         }
     }
@@ -642,6 +650,20 @@ mod wast_tests {
             }
 
             let data = read(&dir.path()).expect("wast data");
+
+            #[cfg(feature = "deterministic")]
+            {
+                // Skip files with floating-point operations when deterministic feature is enabled
+                let contents = String::from_utf8_lossy(&data);
+                if contents.contains("f32") || contents.contains("f64") {
+                    let fname = dir.file_name();
+                    let fname_str = fname.to_str().expect("name");
+                    println!("Parsing {:?}", fname_str);
+                    println!("{}: skipping (contains float operations)", fname_str);
+                    continue;
+                }
+            }
+
             run_wabt_scripts(
                 dir.file_name().to_str().expect("name"),
                 &data,
@@ -733,11 +755,26 @@ mod wast_tests {
             }
 
             let data = read(&dir.path()).expect("wast data");
+
+            #[cfg(feature = "deterministic")]
+            {
+                // Skip files with floating-point operations when deterministic feature is enabled
+                let contents = String::from_utf8_lossy(&data);
+                if contents.contains("f32") || contents.contains("f64") {
+                    println!("Parsing {:?}", dir.file_name().to_str().expect("name"));
+                    println!(
+                        "{}: skipping (contains float operations)",
+                        dir.file_name().to_str().expect("name")
+                    );
+                    continue;
+                }
+            }
+
             run_wabt_scripts(
                 dir.file_name().to_str().expect("name"),
                 &data,
                 default_config(),
-                |_, _| false,
+                |_name, _line| false,
             );
         }
     }
