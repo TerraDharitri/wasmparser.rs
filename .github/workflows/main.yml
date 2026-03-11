@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        rust: [stable, beta, nightly]
+        rust: [1.85.0, 1.86.0-beta, nightly-2024-06-10]
     steps:
     - uses: actions/checkout@v1
       with:
